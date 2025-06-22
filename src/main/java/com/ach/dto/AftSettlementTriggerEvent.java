@@ -1,4 +1,4 @@
-package com.settlement.dto;
+package com.ach.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
