@@ -3,6 +3,9 @@ package com.settlement.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import com.common.iso.CanonicalPayment;
+import com.rtr.dto.Pacs002Response;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -14,7 +17,7 @@ import java.util.List;
 public class SettlementProcessor {
 
     public void processFile(String fileName) {
-        Path filePath = Path.of("batches", fileName);
+        Path filePath = Path.of("/Users/reyansh/Desktop/raman/Auth/batch", fileName);
 
         if (!Files.exists(filePath)) {
             log.error("❌ File not found: {}", filePath);
@@ -38,5 +41,28 @@ public class SettlementProcessor {
         } catch (IOException e) {
             log.error("⚠️ Error reading AFT file", e);
         }
+    }
+    
+    
+    public void processRtrPayment(Pacs002Response pacs002) {
+    	 if (!"ACCP".equalsIgnoreCase(pacs002.getTransactionStatus())) {
+    	        log.warn("⏭ Payment {} was not accepted. Status: {}, Reason: {}",
+    	                 pacs002.getOriginalPaymentId(),
+    	                 pacs002.getTransactionStatus(),
+    	                 pacs002.getReasonCode());
+    	        return;
+    	    }
+
+    	    log.info("💸 Settling RTR payment: {} -> {} : ${}",
+    	             pacs002.getFromAccount(),
+    	             pacs002.getToAccount(),
+    	             pacs002.getAmount());
+
+    	    // Simulate debit & credit here
+    	    // e.g., accountService.debit(pacs002.getFromAccount(), pacs002.getAmount());
+
+    	    log.info("✅ RTR payment {} settled successfully at {}", 
+    	             pacs002.getOriginalPaymentId(), 
+    	             pacs002.getSettlementTimestamp());
     }
 }
