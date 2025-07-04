@@ -4,6 +4,16 @@ server:
 spring:
   application:
     name: settlement-service
+    
+  datasource:
+    url: jdbc:postgresql://localhost:5432/settlementdb
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
 
   kafka:
     bootstrap-servers: localhost:29092
@@ -14,7 +24,20 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
+        spring.json.value.default.type: com.settlement.dto.Camt002AckEvent
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8081/.well-known/jwks.json
 
 kafka:
   topic:
-    settlement: payment.settlement.ready
+    settlement: payment.ready-for-settlement
+    
+  billtopic:
+    settlement: billpayment.ready-for-settlement

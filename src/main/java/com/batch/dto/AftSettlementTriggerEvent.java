@@ -1,4 +1,4 @@
-package com.ach.dto;
+package com.batch.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AftSettlementTriggerEvent {
     private String fileName;
-    private LocalDate batchDate;
+    private String batchDate;
     private int recordCount;
-    private String eventType;
+    private String eventType = "payment.ready-for-settlement";
 }
